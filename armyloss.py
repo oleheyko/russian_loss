@@ -134,5 +134,36 @@ class ArmyLoss():
         ax.legend()
         plt.xlabel("Day",fontdict = font2)
         plt.ylabel("Number", fontdict = font2)
+
         
         return f
+    
+    def _pre_process_bar_plot(self,label):
+        self.week_loss = []
+
+        for i in range(0,len(self.df)-7,7):
+            self.week_loss.append(self.df[label][i+7] - self.df[label][i])
+        
+        x = (len(self.df)-1)%7
+        if x != 0:
+            self.week_loss.append(self.df[label][self.df.index[-1]]-self.df[label][self.df.index[-1-x]])
+            
+    def get_bar_plot(self,label):
+        self._pre_process_bar_plot(label)
+        
+        array = np.array(self.week_loss)
+        rank = array.argsort().argsort()
+        
+        
+        sns.set_theme(style="whitegrid")
+        pal = sns.color_palette("Blues_d", len(self.week_loss))
+                                
+        font2 = {'family':'serif','color':'black','size':18}
+        fig, ax = plt.subplots(figsize=(15, 10))
+        ax = sns.barplot(x = np.linspace(1,len(self.week_loss),len(self.week_loss)), y = self.week_loss, palette=np.array(pal)[rank])
+        plt.xticks(fontsize=16)
+        plt.yticks(fontsize=16)
+        plt.xlabel("Week", fontdict = font2)
+        plt.ylabel(label, fontdict = font2)
+        
+        return fig
