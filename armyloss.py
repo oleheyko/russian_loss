@@ -1,15 +1,18 @@
 import datetime
 from os import path
+import os
 import requests
 import bs4
 import pandas as pd
 import numpy as np
 import warnings
-warnings.filterwarnings("ignore")
 import seaborn as sns 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
+warnings.filterwarnings("ignore")
 formatter = mdates.DateFormatter('%b %d')
+
 
 class ArmyLoss():
     
@@ -18,7 +21,13 @@ class ArmyLoss():
         self.base_url = 'https://index.minfin.com.ua/ua/russian-invading/casualties/'
         self.current_month = datetime.datetime.now().month 
         
-        if not path.exists("armyloss.pkl"):
+        if path.exists("armyloss.pkl"):
+            
+            self.df = pd.read_pickle("armyloss.pkl")
+            
+            if not self.df.iloc[-1]['Date'].day_of_year == pd.to_datetime("today").day_of_year:
+                os.remove("armyloss.pkl")
+        else:
             
             self.month_list = []
         
@@ -30,12 +39,8 @@ class ArmyLoss():
         
             self._pre_process()
             
-            self.df.to_pickle("armyloss.pkl")
-            
-        else:
-            
-            self.df = pd.read_pickle("armyloss.pkl")
-            
+            self.df.to_pickle("armyloss.pkl")            
+              
         
 #        self._generate_resultset_day()
         
@@ -103,7 +108,7 @@ class ArmyLoss():
             'Літаки':'Fighter Aircrafts',
             'Танки':'Tanks',
             'Гелікоптери':'Helicopters',
-            'БПЛА':'Unamanned Aircrafts',    
+            'БПЛА':'Unmanned Aircrafts',    
             'РСЗВ':'Multiple Rocket Launcher',
             'ББМ':'Armoured Vehicles',
             'Засоби ППО':'Air Defence Systems',
@@ -125,8 +130,8 @@ class ArmyLoss():
         f, ax = plt.subplots(figsize=(8, 8))
         f.patch.set_facecolor('white')
         for item in labels:
-            ax.plot(self.df['Date'], self.df[item],label = item)
-        plt.grid()
+            ax.plot(self.df['Date'], self.df[item], label = item)
+        plt.grid(True)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         ax.xaxis.set_major_formatter(formatter)
@@ -134,7 +139,7 @@ class ArmyLoss():
         ax.legend()
         plt.xlabel("Day",fontdict = font2)
         plt.ylabel("Number", fontdict = font2)
-
+    
         
         return f
     
@@ -148,22 +153,32 @@ class ArmyLoss():
         if x != 0:
             self.week_loss.append(self.df[label][self.df.index[-1]]-self.df[label][self.df.index[-1-x]])
             
-    def get_bar_plot(self,label):
+    def get_bar_plot(self,label):        
+        
         self._pre_process_bar_plot(label)
         
         array = np.array(self.week_loss)
         rank = array.argsort().argsort()
-        
-        
-        sns.set_theme(style="whitegrid")
-        pal = sns.color_palette("Blues_d", len(self.week_loss))
-                                
+        week_num = np.linspace(1,len(self.week_loss),len(self.week_loss))
+        week_num = [int(i) for i in week_num]
+#        sns.set_theme(style="whitegrid")
+        pal = sns.color_palette("Blues_d", len(self.week_loss)) 
+                            
         font2 = {'family':'serif','color':'black','size':18}
-        fig, ax = plt.subplots(figsize=(15, 10))
-        ax = sns.barplot(x = np.linspace(1,len(self.week_loss),len(self.week_loss)), y = self.week_loss, palette=np.array(pal)[rank])
-        plt.xticks(fontsize=16)
-        plt.yticks(fontsize=16)
-        plt.xlabel("Week", fontdict = font2)
-        plt.ylabel(label, fontdict = font2)
+        fig, ax = plt.subplots(figsize=(16, 10))
+        ax = sns.barplot(x = week_num, y = self.week_loss, palette=np.array(pal)[rank])
+        sns.set(font_scale=1.5)
+        ax.set(xlabel='common xlabel')
+        ax.set_xlabel("Week Number", fontsize = 30)
+        ax.set_ylabel(label, fontsize = 30)
+   
         
         return fig
+    
+    def get_recent_data(self, label):
+        
+        return int(self.df.iloc[-1][label]), int(self.df.iloc[-1][label] - self.df.iloc[-2][label])
+    
+  #  def get_box_plot(self, label):
+        
+        
