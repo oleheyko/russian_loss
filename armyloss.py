@@ -6,7 +6,8 @@ import bs4
 import pandas as pd
 import numpy as np
 import warnings
-import seaborn as sns 
+import seaborn as sns
+import plotly.express as px
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 

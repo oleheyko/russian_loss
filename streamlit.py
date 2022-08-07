@@ -7,7 +7,7 @@ if "selected" in st.session_state:
     del st.session_state.selected
 
 
-st.title("Russia's war against Ukraine: Loss since 24 February 2022")
+st.title("Tracking the combat losses of Russia since the beginning of the war with Ukraine")
 
 
 st.text("")
