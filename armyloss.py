@@ -178,9 +178,10 @@ class ArmyLoss():
         fig, ax = plt.subplots(figsize=(16, 10))
         ax = sns.barplot(x = week_num, y = self.week_loss, palette=np.array(pal)[rank])
         sns.set(font_scale=1.5)
-        ax.set(xlabel='common xlabel')
         ax.set_xlabel("Week Number", fontsize = 30)
         ax.set_ylabel(label, fontsize = 30)
+        ax.set_yticklabels(ax.get_yticks(), size = 20)
+        ax.set_xticklabels(ax.get_xticks(), size = 20)
    
         
         return fig
@@ -204,7 +205,10 @@ class ArmyLoss():
         fig.patch.set_facecolor('white')
         ax = sns.boxplot(x=self.new_df.Date.dt.month_name(), y=label, data=self.new_df) # x=self.new_df.Date.dt.month month_name
         ax.yaxis.grid(True)
-        ax = sns.set(font_scale = 1)
+        ax.set_xlabel("Month", fontsize = 20)
+        ax.set_ylabel(label, fontsize = 20)
+        #ax.set_yticklabels(ax.get_yticks(), size = 15)
+        #ax.set_xticklabels(ax.get_xticks(), size = 15)
         
         return fig
         
