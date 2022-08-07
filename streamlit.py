@@ -135,4 +135,11 @@ if option:
     fig = s.get_bar_plot(option)
     st.pyplot(fig)
 
-st.subheader('Box plot of millitary loss changing with time')
+st.subheader('Box plot of millitary loss  per a day changing with time')
+option_box_plot = st.selectbox(
+     'Please, select a category:',
+     (s.get_columns()[:-1]))
+
+if option_box_plot:
+    fig = s.get_box_plot(option_box_plot)
+    st.pyplot(fig)

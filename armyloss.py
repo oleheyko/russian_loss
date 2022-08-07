@@ -21,12 +21,16 @@ class ArmyLoss():
         self.base_url = 'https://index.minfin.com.ua/ua/russian-invading/casualties/'
         self.current_month = datetime.datetime.now().month 
         
-        if path.exists("armyloss.pkl"):
+        if path.exists("armyloss.pkl") and path.exists("armyloss_change.pkl"):
             
             self.df = pd.read_pickle("armyloss.pkl")
             
+            self.new_df = pd.read_pickle("armyloss_change.pkl")
+            
             if not self.df.iloc[-1]['Date'].day_of_year == pd.to_datetime("today").day_of_year:
                 os.remove("armyloss.pkl")
+                os.remove("armyloss_change.pkl")
+            
         else:
             
             self.month_list = []
@@ -37,11 +41,15 @@ class ArmyLoss():
         
             self._add_dates()
         
-            self._pre_process()
+            self._pre_process() 
             
-            self.df.to_pickle("armyloss.pkl")            
+            self.df.to_pickle("armyloss.pkl")      
+            
+            self._preprocess_data_histplot()   
+            
+            self.new_df.to_pickle("armyloss_change.pkl")
+ 
               
-        
 #        self._generate_resultset_day()
         
     def _update_month(self):
@@ -75,6 +83,8 @@ class ArmyLoss():
                 res = [int(ele) for ele in list if ele.isdigit()]
                 d[name] = res[0]
             self.df = self.df.append(d, ignore_index = True)
+        
+         
     
     
     def _generate_resultset_day(self):
@@ -179,6 +189,23 @@ class ArmyLoss():
         
         return int(self.df.iloc[-1][label]), int(self.df.iloc[-1][label] - self.df.iloc[-2][label])
     
-  #  def get_box_plot(self, label):
+    def _preprocess_data_histplot(self):
+        self.new_df = pd.DataFrame()
+        self.df = self.df.replace(0,np.nan)
+        for row in range(1, len(self.df.index)):
+            df_to_append = self.df.iloc[row,:] - self.df.iloc[row-1,:]
+            df_to_append['Date'] = self.df['Date'][row]
+            self.new_df = self.new_df.append(df_to_append, ignore_index=True)
+            
+    
+    
+    def get_box_plot(self, label):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        fig.patch.set_facecolor('white')
+        ax = sns.boxplot(x=self.new_df.Date.dt.month_name(), y=label, data=self.new_df) # x=self.new_df.Date.dt.month month_name
+        ax.yaxis.grid(True)
+        ax = sns.set(font_scale = 1)
+        
+        return fig
         
         
