@@ -47,8 +47,9 @@ with col4:
           st.metric(label = "Cruise Missiles", value = metric)
      
 with col5:
+     metric, change = s.get_recent_data("Air Defence Systems")
      if not change == 0:
-          metric, change = s.get_recent_data("Air Defence Systems", value = metric, delta = change)
+          st.metric("Air Defence Systems", value = metric, delta = change)
      else:
           st.metric(label = "Air Defence Systems", value = metric)
      
