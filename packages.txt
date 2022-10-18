@@ -1,8 +1,7 @@
-requests-dev
-bs4-dev
-BeautifulSoup-dev
-pandas-dev
-numpy-dev
-seaborn-dev
-plotly-dev
-matplotlib-dev
+requests==2.27.1
+beautifulsoup4==4.10.0
+pandas==1.4.1
+numpy==1.22.3
+seaborn==0.11.2
+plotly==5.9.0
+matplotlib==3.5.1
