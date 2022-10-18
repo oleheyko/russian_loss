@@ -202,7 +202,7 @@ class ArmyLoss():
     
     
     def get_box_plot(self, label):
-        fig, ax = plt.subplots(figsize=(12, 12 ))
+        fig, ax = plt.subplots(figsize=(8, 8 ))
         fig.patch.set_facecolor('white')
         ax = sns.boxplot(x=self.new_df.Date.dt.month_name(), y=label, data=self.new_df) # x=self.new_df.Date.dt.month month_name
         ax.yaxis.grid(True)
@@ -210,7 +210,8 @@ class ArmyLoss():
         ax.set_ylabel(label, fontsize = 20)
         #ax.set_yticklabels(ax.get_yticks(), size = 15)
         #ax.set_xticklabels(ax.get_xticks(), size = 15)
-        
+        plt.setp(ax.get_xticklabels(), rotation=75)
+
         return fig
         
         

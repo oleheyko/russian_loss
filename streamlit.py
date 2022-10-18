@@ -128,19 +128,27 @@ if options:
 
 st.subheader("Russia's millitary loss per a week")
 
-option = st.selectbox(
-     'Please, select category:',
-     (s.get_columns()[:-1]))
+columns = s.get_columns()[:-1]
+options = ['']
+options += columns
+    
+selected = st.selectbox('Please, select a category:', options, format_func=lambda x: 'Select an option' if x == '' else x)
 
-if option:
-    fig = s.get_bar_plot(option)
+if selected:
+    fig = s.get_bar_plot(selected)
     st.pyplot(fig)
 
 st.subheader('Box plot of millitary loss  per a day changing with time')
-option_box_plot = st.selectbox(
-     'Please, select a category:',
-     (s.get_columns()[:-1]))
 
-if option_box_plot:
-    fig = s.get_box_plot(option_box_plot)
+
+columns = s.get_columns()[:-1]
+options_selectbox = ['']
+options_selectbox += columns
+
+selected_boxplot  = st.selectbox('Please, select a category:', options_selectbox, format_func=lambda x: 'Select your option' if x == '' else x)
+
+
+if selected_boxplot:
+    fig = s.get_box_plot(selected_boxplot)
     st.pyplot(fig)
+    
