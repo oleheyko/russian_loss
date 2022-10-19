@@ -9,7 +9,6 @@ if "selected" in st.session_state:
 
 st.title("Tracking the combat losses of Russia since the beginning of the war with Ukraine")
 
-
 st.text("")
 
 st.caption('The data source is Minifin acees through the following [link](https://index.minfin.com.ua/en/russian-invading/casualties/)')
@@ -112,6 +111,7 @@ with col13:
           st.metric(label = "Manpower", value = metric , delta = change)
      else:
           st.metric(label = "Manpower", value = metric)
+
 
 st.text("")
 
