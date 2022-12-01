@@ -7,7 +7,7 @@ if "selected" in st.session_state:
     del st.session_state.selected
 
 
-st.title("Tracking the combat losses of Russia since the beginning of the war with Ukraine")
+st.title("Tracking the combat losses of russia since the beginning of the war")
 
 st.text("")
 
@@ -103,7 +103,7 @@ with col12:
      if not change == 0:
           st.metric(label = "Special Equipment", value = metric , delta = change)
      else:
-          st.metric(label = "Special Equipment", value = metric , delta = change)
+          st.metric(label = "Special Equipment", value = metric)
 
 with col13:
      metric, change = s.get_recent_data("Manpower")
@@ -123,7 +123,8 @@ options = st.multiselect(
 
 if options:
     fig = s.get_linechart(options)
-    st.pyplot(fig)
+#     st.pyplot(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 
 st.subheader("Russia's millitary loss per a week")
@@ -136,9 +137,10 @@ selected = st.selectbox('Please, select a category:', options, format_func=lambd
 
 if selected:
     fig = s.get_bar_plot(selected)
-    st.pyplot(fig)
+#     st.pyplot(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
-st.subheader('Box plot of millitary loss  per a day changing with time')
+st.subheader('Box plot of millitary losses per a day')
 
 
 columns = s.get_columns()[:-1]
@@ -150,5 +152,7 @@ selected_boxplot  = st.selectbox('Please, select a category:', options_selectbox
 
 if selected_boxplot:
     fig = s.get_box_plot(selected_boxplot)
-    st.pyplot(fig)
+#     st.pyplot(fig)
+    st.plotly_chart(fig, use_container_width=True)
+
     

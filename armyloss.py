@@ -138,21 +138,33 @@ class ArmyLoss():
     def get_linechart(self, labels):
         font2 = {'family':'serif','color':'black','size':18}
         
-        f, ax = plt.subplots(figsize=(8, 8))
-        f.patch.set_facecolor('white')
-        for item in labels:
-            ax.plot(self.df['Date'], self.df[item], label = item)
-        plt.grid(True)
-        plt.xticks(fontsize=14)
-        plt.yticks(fontsize=14)
-        ax.xaxis.set_major_formatter(formatter)
-        ax.tick_params(axis='x', rotation=45,  width=2)
-        ax.legend()
-        plt.xlabel("Day",fontdict = font2)
-        plt.ylabel("Number", fontdict = font2)
+        # f, ax = plt.subplots(figsize=(8, 8))
+        # f.patch.set_facecolor('white')
+        # for item in labels:
+        #     ax.plot(self.df['Date'], self.df[item], label = item)
+        # plt.grid(True)
+        # plt.xticks(fontsize=14)
+        # plt.yticks(fontsize=14)
+        # ax.xaxis.set_major_formatter(formatter)
+        # ax.tick_params(axis='x', rotation=45,  width=2)
+        # ax.legend()
+        # plt.xlabel("Day",fontdict = font2)
+        # plt.ylabel("Number", fontdict = font2)
+        
+        fig = px.line(self.df, x="Date", y=labels, title="Russia's military loss by days")
+        
+        fig.update_layout(
+            title="Russia's military loss by days",
+            xaxis_title="Date",
+            yaxis_title="Count",
+            font=dict(
+                family="Courier New",
+                size=16
+            )
+        )
     
         
-        return f
+        return fig
     
     def _pre_process_bar_plot(self,label):
         self.week_loss = []
@@ -175,15 +187,24 @@ class ArmyLoss():
 #        sns.set_theme(style="whitegrid")
         pal = sns.color_palette("Blues_d", len(self.week_loss)) 
                             
-        font2 = {'family':'serif','color':'black','size':18}
-        fig, ax = plt.subplots(figsize=(16, 10))
-        ax = sns.barplot(x = week_num, y = self.week_loss, palette=np.array(pal)[rank])
-        sns.set(font_scale=1.5)
-        ax.set_xlabel("Week Number", fontsize = 30)
-        ax.set_ylabel(label, fontsize = 30)
-        ax.set_yticklabels(ax.get_yticks(), size = 20)
-        ax.set_xticklabels(ax.get_xticks(), size = 20)
-   
+        # font2 = {'family':'serif','color':'black','size':18}
+        # fig, ax = plt.subplots(figsize=(16, 10))
+        # ax = sns.barplot(x = week_num, y = self.week_loss, palette=np.array(pal)[rank])
+        # sns.set(font_scale=1.5)
+        # ax.set_xlabel("Week Number", fontsize = 30)
+        # ax.set_ylabel(label, fontsize = 30)
+        # ax.set_yticklabels(ax.get_yticks(), size = 20)
+        # ax.set_xticklabels(ax.get_xticks(), size = 20)
+        fig = px.bar(x=week_num, y=self.week_loss)
+        fig.update_layout(
+            title="Bar chart of military losses per a week",
+            xaxis_title="Week Number",
+            yaxis_title="Count",
+            font=dict(
+                family="Courier New",
+                size=16,
+            )
+        )
         
         return fig
     
@@ -202,16 +223,23 @@ class ArmyLoss():
     
     
     def get_box_plot(self, label):
-        fig, ax = plt.subplots(figsize=(8, 8 ))
-        fig.patch.set_facecolor('white')
-        ax = sns.boxplot(x=self.new_df.Date.dt.month_name(), y=label, data=self.new_df) # x=self.new_df.Date.dt.month month_name
-        ax.yaxis.grid(True)
-        ax.set_xlabel("Month", fontsize = 20)
-        ax.set_ylabel(label, fontsize = 20)
-        #ax.set_yticklabels(ax.get_yticks(), size = 15)
-        #ax.set_xticklabels(ax.get_xticks(), size = 15)
-        plt.setp(ax.get_xticklabels(), rotation=75)
-
-        return fig
+ 
+        fig = px.box(self.new_df, x=self.new_df.Date.dt.month_name(), y=label, height = 600)
+        # fig.update_xaxes(title_text='Date', size=14)
+        # fig.update_yaxes(title_text='Count', size=14)
+        fig.update_layout(
+            title="Box plot of military losses per a day",
+            xaxis_title="Date",
+            yaxis_title="Count",
+            font=dict(
+                family="Courier New",
+                size=16,
+            )
+        )
         
+        return fig
+    
+    
+if __name__ == "__main__":
+    s = ArmyLoss()
         
