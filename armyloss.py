@@ -20,7 +20,8 @@ class ArmyLoss():
     def __init__(self):
         self.df = pd.DataFrame()
         self.base_url = 'https://index.minfin.com.ua/ua/russian-invading/casualties/'
-        self.current_month = datetime.datetime.now().month 
+        self.current_month = datetime.datetime.now().month
+        self.current_year = datetime.datetime.now().year
         
         if path.exists("armyloss.pkl") and path.exists("armyloss_change.pkl"):
             
@@ -54,10 +55,18 @@ class ArmyLoss():
 #        self._generate_resultset_day()
         
     def _update_month(self):
-        for i in range(2,self.current_month + 1): # add the current month
-            t = datetime.datetime(2022, i, 1, 0, 0)
-            t = t.strftime('%Y-%m')
-            self.month_list.append(t)
+        for year in range(2022, self.current_year + 1):
+            if year == self.current_year:
+                for month in range(1, self.current_month + 1): # add the current month
+                    t = datetime.datetime(year, month, 1, 0, 0)
+                    t = t.strftime('%Y-%m')
+                    self.month_list.append(t)
+            else:
+                for month in range(2, 13): # add the current month
+                    t = datetime.datetime(year, month, 1, 0, 0)
+                    t = t.strftime('%Y-%m')
+                    self.month_list.append(t)
+
             
     def _generate_resulset_data(self):
         for month in reversed(self.month_list):
@@ -83,7 +92,8 @@ class ArmyLoss():
                 name = " ".join(list[:indx])
                 res = [int(ele) for ele in list if ele.isdigit()]
                 d[name] = res[0]
-            self.df = self.df.append(d, ignore_index = True)
+            self.df = pd.concat([self.df, pd.DataFrame([d])], ignore_index = True)
+            #self.df = self.df._append(d, ignore_index = True)
         
          
     
@@ -213,18 +223,26 @@ class ArmyLoss():
         return int(self.df.iloc[-1][label]), int(self.df.iloc[-1][label] - self.df.iloc[-2][label])
     
     def _preprocess_data_histplot(self):
-        self.new_df = pd.DataFrame()
-        self.df = self.df.replace(0,np.nan)
-        for row in range(1, len(self.df.index)):
-            df_to_append = self.df.iloc[row,:] - self.df.iloc[row-1,:]
-            df_to_append['Date'] = self.df['Date'][row]
-            self.new_df = self.new_df.append(df_to_append, ignore_index=True)
+        self.new_df = self.df.diff()
+        self.new_df['Date'] = self.df['Date']
+        # self.new_df = pd.DataFrame()
+        # self.df = self.df.replace(0,np.nan)
+        # self.new_df = self.df.iloc[1, :] - self.df.iloc[0, :]
+        # self.new_df['Date'] = self.df['Date'][1]
+        #
+        # for row in range(2, len(self.df.index)):
+        #     df_to_append = self.df.iloc[row,:] - self.df.iloc[row-1,:]
+        #     df_to_append['Date'] = self.df['Date'][row]
+        #     self.new_df = pd.concat([self.new_df, df_to_append], ignore_index=True)
+        #     # self.new_df = self.new_df._append(df_to_append, ignore_index=True)
             
     
     
     def get_box_plot(self, label):
+
+        print(type(self.new_df))
  
-        fig = px.box(self.new_df, x=self.new_df.Date.dt.month_name(), y=label, height = 600)
+        fig = px.box(self.new_df, x=self.new_df.Date, y=label, height = 600)
         # fig.update_xaxes(title_text='Date', size=14)
         # fig.update_yaxes(title_text='Count', size=14)
         fig.update_layout(
