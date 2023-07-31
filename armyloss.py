@@ -8,7 +8,6 @@ import numpy as np
 import warnings
 import seaborn as sns
 import plotly.express as px
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 warnings.filterwarnings("ignore")
@@ -51,9 +50,7 @@ class ArmyLoss():
             
             self.new_df.to_pickle("armyloss_change.pkl")
  
-              
-#        self._generate_resultset_day()
-        
+
     def _update_month(self):
         for year in range(2022, self.current_year + 1):
             if year == self.current_year:
@@ -146,21 +143,7 @@ class ArmyLoss():
         return self.df.columns.values.tolist()
     
     def get_linechart(self, labels):
-        font2 = {'family':'serif','color':'black','size':18}
-        
-        # f, ax = plt.subplots(figsize=(8, 8))
-        # f.patch.set_facecolor('white')
-        # for item in labels:
-        #     ax.plot(self.df['Date'], self.df[item], label = item)
-        # plt.grid(True)
-        # plt.xticks(fontsize=14)
-        # plt.yticks(fontsize=14)
-        # ax.xaxis.set_major_formatter(formatter)
-        # ax.tick_params(axis='x', rotation=45,  width=2)
-        # ax.legend()
-        # plt.xlabel("Day",fontdict = font2)
-        # plt.ylabel("Number", fontdict = font2)
-        
+
         fig = px.line(self.df, x="Date", y=labels, title="Russia's military loss by days")
         
         fig.update_layout(
@@ -194,17 +177,7 @@ class ArmyLoss():
         rank = array.argsort().argsort()
         week_num = np.linspace(1,len(self.week_loss),len(self.week_loss))
         week_num = [int(i) for i in week_num]
-#        sns.set_theme(style="whitegrid")
-        pal = sns.color_palette("Blues_d", len(self.week_loss)) 
-                            
-        # font2 = {'family':'serif','color':'black','size':18}
-        # fig, ax = plt.subplots(figsize=(16, 10))
-        # ax = sns.barplot(x = week_num, y = self.week_loss, palette=np.array(pal)[rank])
-        # sns.set(font_scale=1.5)
-        # ax.set_xlabel("Week Number", fontsize = 30)
-        # ax.set_ylabel(label, fontsize = 30)
-        # ax.set_yticklabels(ax.get_yticks(), size = 20)
-        # ax.set_xticklabels(ax.get_xticks(), size = 20)
+
         fig = px.bar(x=week_num, y=self.week_loss)
         fig.update_layout(
             title="Bar chart of military losses per a week",
@@ -225,33 +198,25 @@ class ArmyLoss():
     def _preprocess_data_histplot(self):
         self.new_df = self.df.diff()
         self.new_df['Date'] = self.df['Date']
-        # self.new_df = pd.DataFrame()
-        # self.df = self.df.replace(0,np.nan)
-        # self.new_df = self.df.iloc[1, :] - self.df.iloc[0, :]
-        # self.new_df['Date'] = self.df['Date'][1]
-        #
-        # for row in range(2, len(self.df.index)):
-        #     df_to_append = self.df.iloc[row,:] - self.df.iloc[row-1,:]
-        #     df_to_append['Date'] = self.df['Date'][row]
-        #     self.new_df = pd.concat([self.new_df, df_to_append], ignore_index=True)
-        #     # self.new_df = self.new_df._append(df_to_append, ignore_index=True)
+
             
     
     
     def get_box_plot(self, label):
 
-        print(type(self.new_df))
- 
-        fig = px.box(self.new_df, x=self.new_df.Date, y=label, height = 600)
-        # fig.update_xaxes(title_text='Date', size=14)
-        # fig.update_yaxes(title_text='Count', size=14)
+        fig = px.scatter(self.new_df, x='Date', y=label, height = 600,  trendline="rolling",
+                         trendline_options=dict(function="median", window=21))
+
+        fig.update_traces(
+            marker=dict(size=4)
+        )
         fig.update_layout(
-            title="Box plot of military losses per a day",
+            title="Scatter plot of military losses per a day",
             xaxis_title="Date",
             yaxis_title="Count",
             font=dict(
                 family="Courier New",
-                size=16,
+                size=14,
             )
         )
         

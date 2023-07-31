@@ -7,11 +7,11 @@ if "selected" in st.session_state:
     del st.session_state.selected
 
 
-st.title("Tracking the combat losses of russia since the beginning of the war")
+st.title("Tracking the combat losses of russia")
 
 st.text("")
 
-st.caption('The data source is Minifin acees through the following [link](https://index.minfin.com.ua/en/russian-invading/casualties/)')
+st.caption('The data source is Minfin accessed by the following [link](https://index.minfin.com.ua/en/russian-invading/casualties/)')
 
 st.text("")
 
@@ -140,7 +140,7 @@ if selected:
 #     st.pyplot(fig)
     st.plotly_chart(fig, use_container_width=True)
 
-st.subheader('Box plot of millitary losses per a day')
+st.subheader('Scatter plot of millitary losses per a day')
 
 
 columns = s.get_columns()[:-1]
